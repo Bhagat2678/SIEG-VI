@@ -39,7 +39,7 @@ Module G (encryption) and consent/session-clearing wrap around every step, not s
 
 ## 2. Shared Structured History Schema (build this first)
 
-This is the single most important early artifact. Both the voice pipeline and the OCR pipeline write into it; the summary generator, the doctor's screen, and the ABDM FHIR push all read from it.
+This is the single most important early artifact. Both the voice pipeline and the OCR pipeline write into it; the summary generator, the doctor's screen, and the ABDM FHIR push all read from it. Full database tables and JSONB specifications are documented in [`DATABASE_SCHEMA.md`](./DATABASE_SCHEMA.md).
 
 ```json
 {
