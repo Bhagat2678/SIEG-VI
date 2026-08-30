@@ -39,6 +39,8 @@ medikiosk/
 | `PRD.md` | What we're building and why — requirements, users, success criteria |
 | `MODULES.md` | Breakdown of each functional module and its scope |
 | `TECH_STACK.md` | Concrete tools/APIs for each layer |
+| `DATABASE_SCHEMA.md` | PostgreSQL relational + JSONB schema, tables, and column specifications |
+| `VOICE_WRITE_CONTRACT.md` | Module A (Voice Engine) write payload and endpoint contract |
 | `WORKFLOW.md` | Data flow and system architecture |
 | `WALKTHROUGH.md` | Step-by-step patient and staff journey |
 | `TASKS.md` | Build order, sprint breakdown, MVP-first sequencing |
