@@ -1,0 +1,215 @@
+import React, { useState } from 'react';
+import { ScreenType, HealthRecordItem, UserProfile, DoshaType } from './types';
+import { HEALTH_RECORDS_DATA, INITIAL_USER_PROFILE } from './data/mockData';
+import { Sidebar } from './components/Sidebar';
+import { TopNav } from './components/TopNav';
+import { BottomNav } from './components/BottomNav';
+import { HomeDashboardView } from './components/HomeDashboardView';
+import { ABHAVaultView } from './components/ABHAVaultView';
+import { PrakritiQuizView } from './components/PrakritiQuizView';
+import { AyurAIChatView } from './components/AyurAIChatView';
+import { HealthRecordsView } from './components/HealthRecordsView';
+import { SettingsView } from './components/SettingsView';
+import { WellnessHubView } from './components/WellnessHubView';
+import { BookConsultationModal } from './components/BookConsultationModal';
+import { LinkRecordModal } from './components/LinkRecordModal';
+import { DocPreviewModal } from './components/DocPreviewModal';
+import { ShareRecordsModal } from './components/ShareRecordsModal';
+import { VoiceMicFAB } from './components/VoiceMicFAB';
+
+export const App: React.FC = () => {
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
+  const [records, setRecords] = useState<HealthRecordItem[]>(HEALTH_RECORDS_DATA);
+  const [userProfile, setUserProfile] = useState<UserProfile>(INITIAL_USER_PROFILE);
+  const [userDosha, setUserDosha] = useState<DoshaType>('Vata-Pitta');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Modals state
+  const [showBookConsult, setShowBookConsult] = useState(false);
+  const [showLinkRecord, setShowLinkRecord] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedRecordForPreview, setSelectedRecordForPreview] = useState<HealthRecordItem | null>(null);
+  const [selectedRecordForShare, setSelectedRecordForShare] = useState<HealthRecordItem | null>(null);
+
+  const handleNavigate = (screen: ScreenType) => {
+    if (screen === 'consultations') {
+      setShowBookConsult(true);
+      return;
+    }
+    setCurrentScreen(screen);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleAddRecord = (newRec: HealthRecordItem) => {
+    setRecords((prev) => [newRec, ...prev]);
+  };
+
+  const handleSaveQuizOutcome = (dosha: DoshaType, summary: string) => {
+    setUserDosha(dosha);
+    const newRecord: HealthRecordItem = {
+      id: `rec-quiz-${Date.now()}`,
+      category: 'ai-insight',
+      categoryLabel: 'AI Insight',
+      title: `Prakriti Assessment (${dosha})`,
+      date: 'Today',
+      doctor: 'AyurAI Engine & Kiosk Sensor',
+      facility: 'AyurLife Wellness Center',
+      statusType: 'dosha',
+      doshaTags: dosha.split('-'),
+      borderAccentColor: 'bg-[#0f4325]',
+      badgeBgColor: 'bg-[#E8F5E9]',
+      badgeTextColor: 'text-[#2E7D32]',
+      iconName: 'psychiatry',
+      fileSize: '1.2 MB',
+      summaryText: summary,
+    };
+    setRecords((prev) => [newRecord, ...prev]);
+  };
+
+  const handleDownloadAll = () => {
+    alert(`Packaging and exporting ${records.length} ABHA verified health documents into encrypted ZIP archive.`);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#fdf9f4] text-[#1c1c19] flex flex-col font-sans">
+      {/* If full-screen Prakriti quiz mode */}
+      {currentScreen === 'prakriti' ? (
+        <PrakritiQuizView
+          onClose={() => setCurrentScreen('home')}
+          onSaveToRecords={handleSaveQuizOutcome}
+          onNavigateToChat={() => setCurrentScreen('chat')}
+        />
+      ) : (
+        <div className="flex flex-1">
+          {/* Left Sidebar on Desktop */}
+          <Sidebar
+            currentScreen={currentScreen}
+            onNavigate={handleNavigate}
+            onOpenBookConsult={() => setShowBookConsult(true)}
+            userProfile={userProfile}
+          />
+
+          {/* Main Content Area */}
+          <div className="flex-1 md:pl-64 flex flex-col min-h-screen pb-20 md:pb-8">
+            {/* Top Bar Header */}
+            <TopNav
+              currentScreen={currentScreen}
+              onNavigate={handleNavigate}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              userProfile={userProfile}
+            />
+
+            {/* View Switching */}
+            <main className="flex-1">
+              {currentScreen === 'home' && (
+                <HomeDashboardView
+                  onNavigate={handleNavigate}
+                  onOpenQuiz={() => setCurrentScreen('prakriti')}
+                  onOpenBookConsult={() => setShowBookConsult(true)}
+                  onViewRecord={setSelectedRecordForPreview}
+                  userProfile={userProfile}
+                  records={records}
+                  userDosha={userDosha}
+                />
+              )}
+
+              {currentScreen === 'vault' && (
+                <ABHAVaultView
+                  onLinkNewRecord={() => setShowLinkRecord(true)}
+                  onViewRecord={setSelectedRecordForPreview}
+                  onNavigateToCategory={() => setCurrentScreen('records')}
+                  records={records}
+                />
+              )}
+
+              {currentScreen === 'records' && (
+                <HealthRecordsView
+                  records={records}
+                  onViewRecord={setSelectedRecordForPreview}
+                  onShareRecords={() => {
+                    setSelectedRecordForShare(null);
+                    setShowShareModal(true);
+                  }}
+                  onDownloadAll={handleDownloadAll}
+                  searchQuery={searchQuery}
+                />
+              )}
+
+              {currentScreen === 'chat' && (
+                <AyurAIChatView userProfile={userProfile} />
+              )}
+
+              {currentScreen === 'wellness' && (
+                <WellnessHubView />
+              )}
+
+              {currentScreen === 'settings' && (
+                <SettingsView
+                  userProfile={userProfile}
+                  onUpdateProfile={setUserProfile}
+                />
+              )}
+            </main>
+          </div>
+
+          {/* Mobile Bottom Navigation */}
+          <BottomNav
+            currentScreen={currentScreen}
+            onNavigate={handleNavigate}
+          />
+        </div>
+      )}
+
+            {currentScreen === 'prakriti' ? (
+        <PrakritiQuizView
+          onClose={() => setCurrentScreen('home')}
+          onSaveToRecords={handleSaveQuizOutcome}
+          onNavigateToChat={() => setCurrentScreen('chat')}
+        />
+      ) : (
+        <div className="flex flex-1">
+          {/* ...unchanged... */}
+        </div>
+      )}
+
+      {/* Global Voice Assistant — persists across every screen */}
+      <VoiceMicFAB onActivate={() => console.log('open voice assistant')} />
+
+      {/* Global Modals */}
+      {showBookConsult && (
+        <BookConsultationModal onClose={() => setShowBookConsult(false)} />
+      )}
+
+      {showLinkRecord && (
+        <LinkRecordModal
+          onClose={() => setShowLinkRecord(false)}
+          onAddRecord={handleAddRecord}
+        />
+      )}
+
+      {selectedRecordForPreview && (
+        <DocPreviewModal
+          record={selectedRecordForPreview}
+          onClose={() => setSelectedRecordForPreview(null)}
+          onShare={(rec) => {
+            setSelectedRecordForShare(rec);
+            setShowShareModal(true);
+          }}
+        />
+      )}
+
+      {showShareModal && (
+        <ShareRecordsModal
+          record={selectedRecordForShare}
+          onClose={() => {
+            setShowShareModal(false);
+            setSelectedRecordForShare(null);
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export default App;
