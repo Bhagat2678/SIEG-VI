@@ -255,17 +255,9 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
         {/* Top Header Bar */}
         <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-white/50">
           <div className="flex items-center gap-3.5">
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="p-3 border rounded-[14px] shadow-sm"
-              style={{ backgroundColor: '#F7F3EE', borderColor: 'rgba(45, 90, 61, 0.2)', color: '#2D5A3D' }}
-            >
-              <Activity className="w-6 h-6" />
-            </motion.div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight leading-snug" style={{ color: '#1A1A1A' }}>
-                Welcome to MediKiosk+
+                Welcome to AyurLife
               </h1>
               <p className="text-sm font-medium leading-relaxed" style={{ color: '#6B6B6B' }}>Citizen Healthcare Infrastructure Access</p>
             </div>
