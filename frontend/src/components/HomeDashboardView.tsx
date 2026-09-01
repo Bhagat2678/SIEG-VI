@@ -1,13 +1,13 @@
 import React from 'react';
-import { ScreenType, HealthRecordItem, UserProfile, DoshaType } from '../types';
+import { ScreenType, MedicalRecordItem, UserProfile, DoshaType } from '../types';
 
 interface HomeDashboardViewProps {
   onNavigate: (screen: ScreenType) => void;
   onOpenQuiz: () => void;
   onOpenBookConsult: () => void;
-  onViewRecord: (record: HealthRecordItem) => void;
+  onViewRecord: (record: MedicalRecordItem) => void;
   userProfile: UserProfile;
-  records: HealthRecordItem[];
+  records: MedicalRecordItem[];
   userDosha: DoshaType;
 }
 
@@ -147,59 +147,6 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({
               arrow_forward
             </span>
           </div>
-        </div>
-      </div>
-
-      {/* Recent Health Documents */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-[22px] font-bold text-[#1c1c19] tracking-tight">
-            Recent Health Documents
-          </h2>
-          <button
-            type="button"
-            onClick={() => onNavigate('records')}
-            className="text-[13px] font-bold text-[#144227] hover:underline"
-          >
-            View All Records →
-          </button>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-[0px_4px_20px_rgba(45,90,61,0.04)] border border-[#c1c9c0]/30 divide-y divide-[#f1ede8] overflow-hidden">
-          {records.slice(0, 3).map((rec) => (
-            <div
-              key={rec.id}
-              onClick={() => onViewRecord(rec)}
-              className="p-5 hover:bg-[#f7f3ee]/50 transition-colors flex items-center justify-between gap-4 cursor-pointer group"
-            >
-              <div className="flex items-center gap-3.5">
-                <div
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                    rec.category === 'prescription'
-                      ? 'bg-[#ffdbd0] text-[#a13f1f]'
-                      : 'bg-[#bceec8] text-[#144227]'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[22px]">{rec.iconName}</span>
-                </div>
-                <div>
-                  <h4 className="font-bold text-[15px] text-[#1c1c19] group-hover:text-[#144227] transition-colors">
-                    {rec.title}
-                  </h4>
-                  <p className="text-[12px] text-[#717971] mt-0.5">
-                    {rec.doctor} • {rec.facility}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <span className="text-[12px] font-semibold text-[#717971]">{rec.date}</span>
-                <span className="material-symbols-outlined text-[#717971] group-hover:text-[#144227] text-[18px]">
-                  chevron_right
-                </span>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>

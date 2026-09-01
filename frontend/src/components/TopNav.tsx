@@ -43,8 +43,9 @@ export const TopNav: React.FC<TopNavProps> = ({
 
   const navLinks: { screen: ScreenType; label: string }[] = [
   { screen: 'home', label: 'Dashboard' },
-  { screen: 'records', label: 'Health Records' },
-  { screen: 'wellness', label: 'Wellness Hub' },
+  { screen: 'records', label: 'Consultations' },
+  { screen: 'schemes', label: 'Schemes' },
+  //{ screen: 'wellness', label: 'Wellness Hub' },
 ];
 
   const markAllRead = () => {
@@ -62,7 +63,7 @@ export const TopNav: React.FC<TopNavProps> = ({
           onClick={() => onNavigate('home')}
           className="font-bold text-[22px] tracking-tight text-[#144227] hover:opacity-90 transition-opacity flex items-center gap-2"
         >
-          <span>MediKiosk+</span>
+          <span></span>
           {userProfile.kioskMode && (
             <span className="text-[11px] font-bold uppercase tracking-wider bg-[#2d5a3d] text-[#9ed0ab] px-2 py-0.5 rounded-full">
               Kiosk Active

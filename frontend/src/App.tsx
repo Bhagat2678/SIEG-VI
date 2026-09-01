@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ScreenType, HealthRecordItem, UserProfile, DoshaType } from './types';
-import { HEALTH_RECORDS_DATA, INITIAL_USER_PROFILE } from './data/mockData';
+import { ScreenType, HealthRecordItem, MedicalRecordItem, UserProfile, DoshaType } from './types';
+import { MEDICAL_RECORDS_DATA, INITIAL_USER_PROFILE } from './data/mockData';
 import { Sidebar } from './components/Sidebar';
 import { TopNav } from './components/TopNav';
 import { BottomNav } from './components/BottomNav';
@@ -10,16 +10,18 @@ import { PrakritiQuizView } from './components/PrakritiQuizView';
 import { AyurAIChatView } from './components/AyurAIChatView';
 import { HealthRecordsView } from './components/HealthRecordsView';
 import { SettingsView } from './components/SettingsView';
-import { WellnessHubView } from './components/WellnessHubView';
+// import { WellnessHubView } from './components/WellnessHubView'; // not built yet — 'wellness' screen disabled below
 import { BookConsultationModal } from './components/BookConsultationModal';
 import { LinkRecordModal } from './components/LinkRecordModal';
 import { DocPreviewModal } from './components/DocPreviewModal';
 import { ShareRecordsModal } from './components/ShareRecordsModal';
 import { VoiceMicFAB } from './components/VoiceMicFAB';
+import { VaultVerifyModal } from './components/VaultVerifyModal';
+import { LiveSchemesNewsView } from './components/LiveSchemesNewsView';
 
 export const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
-  const [records, setRecords] = useState<HealthRecordItem[]>(HEALTH_RECORDS_DATA);
+  const [records, setRecords] = useState<MedicalRecordItem[]>(MEDICAL_RECORDS_DATA);
   const [userProfile, setUserProfile] = useState<UserProfile>(INITIAL_USER_PROFILE);
   const [userDosha, setUserDosha] = useState<DoshaType>('Vata-Pitta');
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,6 +30,8 @@ export const App: React.FC = () => {
   const [showBookConsult, setShowBookConsult] = useState(false);
   const [showLinkRecord, setShowLinkRecord] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [vaultVerified, setVaultVerified] = useState(false);
+  const [showVaultVerify, setShowVaultVerify] = useState(false);
   const [selectedRecordForPreview, setSelectedRecordForPreview] = useState<HealthRecordItem | null>(null);
   const [selectedRecordForShare, setSelectedRecordForShare] = useState<HealthRecordItem | null>(null);
 
@@ -36,6 +40,17 @@ export const App: React.FC = () => {
       setShowBookConsult(true);
       return;
     }
+
+    // Leaving the vault always kills the verified session
+    if (currentScreen === 'vault' && screen !== 'vault') {
+      setVaultVerified(false);
+    }
+
+    // Entering an unverified vault triggers step-up auth
+    if (screen === 'vault' && !vaultVerified) {
+      setShowVaultVerify(true);
+    }
+
     setCurrentScreen(screen);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -115,12 +130,14 @@ export const App: React.FC = () => {
               )}
 
               {currentScreen === 'vault' && (
-                <ABHAVaultView
-                  onLinkNewRecord={() => setShowLinkRecord(true)}
-                  onViewRecord={setSelectedRecordForPreview}
-                  onNavigateToCategory={() => setCurrentScreen('records')}
-                  records={records}
-                />
+                <div className={!vaultVerified ? 'blur-md pointer-events-none select-none' : ''}>
+                  <ABHAVaultView
+                    onLinkNewRecord={() => setShowLinkRecord(true)}
+                    onViewRecord={setSelectedRecordForPreview}
+                    onNavigateToCategory={() => setCurrentScreen('records')}
+                    records={vaultVerified ? records : []}
+                  />
+                </div>
               )}
 
               {currentScreen === 'records' && (
@@ -140,9 +157,11 @@ export const App: React.FC = () => {
                 <AyurAIChatView userProfile={userProfile} />
               )}
 
-              {currentScreen === 'wellness' && (
-                <WellnessHubView />
+              {currentScreen === 'schemes' && (
+                  <LiveSchemesNewsView onBack={() => setCurrentScreen('home')} />
               )}
+
+              {/* 'wellness' screen disabled until WellnessHubView is built */}
 
               {currentScreen === 'settings' && (
                 <SettingsView
@@ -161,24 +180,26 @@ export const App: React.FC = () => {
         </div>
       )}
 
-            {currentScreen === 'prakriti' ? (
-        <PrakritiQuizView
-          onClose={() => setCurrentScreen('home')}
-          onSaveToRecords={handleSaveQuizOutcome}
-          onNavigateToChat={() => setCurrentScreen('chat')}
-        />
-      ) : (
-        <div className="flex flex-1">
-          {/* ...unchanged... */}
-        </div>
-      )}
-
       {/* Global Voice Assistant — persists across every screen */}
       <VoiceMicFAB onActivate={() => console.log('open voice assistant')} />
 
       {/* Global Modals */}
       {showBookConsult && (
         <BookConsultationModal onClose={() => setShowBookConsult(false)} />
+      )}
+
+      {showVaultVerify && (
+        <VaultVerifyModal
+          onVerified={() => {
+            setVaultVerified(true);
+            setShowVaultVerify(false);
+          }}
+          onCancel={() => {
+            setShowVaultVerify(false);
+            setVaultVerified(false);
+            setCurrentScreen('home'); // "back" behavior
+          }}
+        />
       )}
 
       {showLinkRecord && (

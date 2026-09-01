@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { HealthRecordItem, VaultCategory } from '../types';
+import { MedicalRecordItem, VaultCategory } from '../types';
 
 interface ABHAVaultViewProps {
   onLinkNewRecord: () => void;
-  onViewRecord: (record: HealthRecordItem) => void;
+  onViewRecord: (record: MedicalRecordItem) => void;
   onNavigateToCategory: (category: string) => void;
-  records: HealthRecordItem[];
+  records: MedicalRecordItem[];
 }
 
 export const ABHAVaultView: React.FC<ABHAVaultViewProps> = ({

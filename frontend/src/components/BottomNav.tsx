@@ -13,7 +13,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentScreen, onNavigate 
     { screen: 'vault', label: 'Vault', icon: 'lock_person' },
     { screen: 'records', label: 'Records', icon: 'folder_shared' },
     { screen: 'chat', label: 'AyurAI', icon: 'forum' },
-    { screen: 'wellness', label: 'Wellness', icon: 'spa' },
+    //{ screen: 'wellness', label: 'Wellness', icon: 'spa' },
   ];
 
   return (

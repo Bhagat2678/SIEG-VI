@@ -13,8 +13,8 @@ export const PrakritiQuizView: React.FC<PrakritiQuizViewProps> = ({
   onSaveToRecords,
   onNavigateToChat,
 }) => {
-  const [currentIdx, setCurrentIdx] = useState(2); // default to Question 3 as shown in mockup
-  const [answers, setAnswers] = useState<Record<number, string>>({ 0: 'q1-1', 1: 'q2-2' });
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -89,7 +89,7 @@ export const PrakritiQuizView: React.FC<PrakritiQuizViewProps> = ({
           >
             <span className="material-symbols-outlined text-[24px]">arrow_back</span>
           </button>
-          <h1 className="font-bold text-[20px] text-[#144227]">MediKiosk+</h1>
+          <h1 className="font-bold text-[20px] text-[#144227]">AyurLife</h1>
         </div>
         <button
           type="button"
@@ -130,13 +130,7 @@ export const PrakritiQuizView: React.FC<PrakritiQuizViewProps> = ({
                 {/* Bar 1 */}
                 <div className="flex-1 h-1.5 mx-2 bg-[#ebe8e3] rounded-full relative overflow-hidden">
                   <div
-                    className={`absolute top-0 left-0 h-full bg-[#144227] transition-all duration-300 ${
-                      currentQ.phase === 1
-                        ? `w-[${((currentIdx + 1) / 5) * 100}%]`
-                        : currentQ.phase > 1
-                        ? 'w-full'
-                        : 'w-0'
-                    }`}
+                    className="absolute top-0 left-0 h-full bg-[#144227] transition-all duration-300"
                     style={{
                       width: currentQ.phase === 1 ? `${((currentIdx + 1) / 5) * 100}%` : currentQ.phase > 1 ? '100%' : '0%',
                     }}
@@ -291,7 +285,7 @@ export const PrakritiQuizView: React.FC<PrakritiQuizViewProps> = ({
             {/* Dosha Breakdown Bars */}
             <div className="mt-8 bg-[#f7f3ee] p-6 rounded-2xl border border-[#c1c9c0]/30 max-w-xl mx-auto space-y-4">
               <h4 className="font-bold text-[16px] text-[#144227] mb-2">Tridosha Composition</h4>
-              
+
               <div>
                 <div className="flex justify-between text-[14px] font-bold mb-1">
                   <span className="text-[#2E7D32] flex items-center gap-1.5">

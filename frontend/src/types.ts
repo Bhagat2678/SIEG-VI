@@ -7,6 +7,7 @@ export type ScreenType =
   | 'records'
   | 'wellness'
   | 'consultations';
+  | 'schemes';
 
 export type DoshaType = 'Vata' | 'Pitta' | 'Kapha' | 'Vata-Pitta' | 'Pitta-Kapha' | 'Tridoshic';
 
@@ -123,4 +124,29 @@ export interface UserProfile {
     status: 'Active' | 'Disconnected' | 'Syncing';
     lastSync: string;
   }[];
+}
+
+export interface MedicalRecordItem {
+  id: string;
+  category: 'lab' | 'prescription' | 'report' | 'ai-insight';
+  categoryLabel: string;
+  title: string;
+  date: string;
+  doctor: string;
+  facility: string;
+  statusType: 'normal' | 'active' | 'archival' | 'dosha' | string;
+  statusLabel?: string;
+  doshaTags?: string[];
+  borderAccentColor: string;
+  badgeBgColor: string;
+  badgeTextColor: string;
+  iconName: string;
+  fileSize: string;
+  summaryText: string;
+  details?: {
+    vitals?: { label: string; value: string; status: string }[];
+    findings?: string[];
+    medications?: { name: string; dosage: string; timing: string; duration: string }[];
+    notes?: string;
+  };
 }
