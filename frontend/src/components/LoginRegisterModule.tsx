@@ -56,10 +56,10 @@ const NEWS_TICKER_ITEMS: NewsItem[] = [
 
 const SUPPORTED_LANGUAGES = [
   { code: 'en', label: 'English' },
-  { code: 'hi', label: 'हिन्दी (Hindi)' },
+  { code: 'hi', label: 'ಹಿ೦ದ (Hindi)' },
   { code: 'kn', label: 'ಕನ್ನಡ (Kannada)' },
   { code: 'ta', label: 'தமிழ் (Tamil)' },
-  { code: 'te', label: 'ತೆలుగు (Telugu)' }
+  { code: 'te', label: 'తెలుగు (Telugu)' }
 ];
 
 const SPRING_TRANSITION = { type: 'spring', stiffness: 380, damping: 28 };
@@ -136,6 +136,7 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
     abhaNumber: '',
     fullName: '',
     phone: '',
+    email: '',
     dob: '',
     age: '',
     gender: 'Male',
@@ -144,10 +145,6 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
     emergencyName: '',
     emergencyRel: 'Parent',
     emergencyPhone: '',
-    koshtha: 'Krura',
-    ahara: 'Vegetarian',
-    smoking: 'No',
-    alcohol: 'No',
     password: '',
     confirmPassword: '',
     consentDpdp: false,
@@ -174,6 +171,20 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
 
   const handleNumericInput = (val: string, maxLen: number) => {
     return val.replace(/\D/g, '').slice(0, maxLen);
+  };
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const isStep1Valid = () => {
+    return (
+      regForm.aadhaarNumber.length === 12 &&
+      regForm.abhaNumber.length === 14 &&
+      regForm.fullName.trim().length > 0 &&
+      regForm.phone.length === 10 &&
+      isValidEmail(regForm.email)
+    );
   };
 
   const handleDobChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -448,9 +459,6 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm font-medium" style={{ color: '#1A1A1A' }}>ABDM Authentication Service Interface</p>
-                          <p className="text-xs leading-relaxed max-w-xs mx-auto" style={{ color: '#6B6B6B' }}>
-                            Backend integration required to establish active ABDM QR scan session.
-                          </p>
                         </div>
                       </div>
                     </motion.div>
@@ -667,15 +675,14 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                 <div className="mb-8">
                   <div className="flex justify-between items-center mb-3 text-xs">
                     <span className="font-semibold tracking-wider uppercase" style={{ color: '#2D5A3D' }}>
-                      Step {regStep} of 6
+                      Step {regStep} of 5
                     </span>
                     <span className="font-medium" style={{ color: '#6B6B6B' }}>
                       {regStep === 1 && 'Identity & Identification'}
                       {regStep === 2 && 'Demographics'}
                       {regStep === 3 && 'Emergency Contact'}
-                      {regStep === 4 && 'Ayurveda & Dietary Habits'}
-                      {regStep === 5 && 'Security Credentials'}
-                      {regStep === 6 && 'Consent & ABDM Verification'}
+                      {regStep === 4 && 'Security Credentials'}
+                      {regStep === 5 && 'Consent & ABDM Verification'}
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 rounded-full h-1.5 border border-slate-200 overflow-hidden">
@@ -683,7 +690,7 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                       className="h-full rounded-full"
                       style={{ backgroundColor: '#2D5A3D' }}
                       initial={{ width: 0 }}
-                      animate={{ width: `${(regStep / 6) * 100}%` }}
+                      animate={{ width: `${(regStep / 5) * 100}%` }}
                       transition={SPRING_TRANSITION}
                     />
                   </div>
@@ -704,9 +711,10 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                           className="space-y-4"
                         >
                           <div>
-                            <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Aadhaar Number (UIDAI Verification)</label>
+                            <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Aadhaar Number (UIDAI Verification) *</label>
                             <input
                               type="text"
+                              required
                               maxLength={12}
                               value={regForm.aadhaarNumber}
                               onChange={(e) => setRegForm({ ...regForm, aadhaarNumber: handleNumericInput(e.target.value, 12) })}
@@ -743,27 +751,41 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                             </div>
                           </div>
 
+                          <div>
+                            <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Full Legal Name *</label>
+                            <input
+                              type="text"
+                              required
+                              value={regForm.fullName}
+                              onChange={(e) => setRegForm({ ...regForm, fullName: e.target.value })}
+                              placeholder="As printed on identity card"
+                              className="w-full border border-slate-200 rounded-[12px] p-3 text-sm outline-none transition-all shadow-sm"
+                              style={{ backgroundColor: '#F7F3EE', color: '#1A1A1A' }}
+                            />
+                          </div>
+
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Full Legal Name *</label>
+                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Mobile Number *</label>
                               <input
                                 type="text"
                                 required
-                                value={regForm.fullName}
-                                onChange={(e) => setRegForm({ ...regForm, fullName: e.target.value })}
-                                placeholder="As printed on identity card"
+                                maxLength={10}
+                                value={regForm.phone}
+                                onChange={(e) => setRegForm({ ...regForm, phone: handleNumericInput(e.target.value, 10) })}
+                                placeholder="10-digit mobile number"
                                 className="w-full border border-slate-200 rounded-[12px] p-3 text-sm outline-none transition-all shadow-sm"
                                 style={{ backgroundColor: '#F7F3EE', color: '#1A1A1A' }}
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Mobile Number *</label>
+                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Email Address *</label>
                               <input
-                                type="text"
-                                maxLength={10}
-                                value={regForm.phone}
-                                onChange={(e) => setRegForm({ ...regForm, phone: handleNumericInput(e.target.value, 10) })}
-                                placeholder="10-digit mobile number"
+                                type="email"
+                                required
+                                value={regForm.email}
+                                onChange={(e) => setRegForm({ ...regForm, email: e.target.value })}
+                                placeholder="name@example.com"
                                 className="w-full border border-slate-200 rounded-[12px] p-3 text-sm outline-none transition-all shadow-sm"
                                 style={{ backgroundColor: '#F7F3EE', color: '#1A1A1A' }}
                               />
@@ -903,82 +925,10 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                         </motion.div>
                       )}
 
-                      {/* STEP 4: Lifestyle & Dietary */}
+                      {/* STEP 4 */}
                       {regStep === 4 && (
                         <motion.div
                           key="step4"
-                          custom={stepDirection}
-                          variants={slideStepVariants}
-                          initial="enter"
-                          animate="center"
-                          exit="exit"
-                          className="space-y-4"
-                        >
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Bowel Tendency (Koshtha)</label>
-                              <select
-                                value={regForm.koshtha}
-                                onChange={(e) => setRegForm({ ...regForm, koshtha: e.target.value })}
-                                className="w-full border border-slate-200 rounded-[12px] p-3 text-sm outline-none transition-all shadow-sm cursor-pointer"
-                                style={{ backgroundColor: '#F7F3EE', color: '#1A1A1A' }}
-                              >
-                                <option value="Krura">Krura (Hard / Constipated)</option>
-                                <option value="Mrdhu">Mrdhu (Soft / Loose)</option>
-                                <option value="Madhyama">Madhyama (Regular / Balanced)</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Dietary Habit (Ahara)</label>
-                              <select
-                                value={regForm.ahara}
-                                onChange={(e) => setRegForm({ ...regForm, ahara: e.target.value })}
-                                className="w-full border border-slate-200 rounded-[12px] p-3 text-sm outline-none transition-all shadow-sm cursor-pointer"
-                                style={{ backgroundColor: '#F7F3EE', color: '#1A1A1A' }}
-                              >
-                                <option value="Vegetarian">Strict Vegetarian</option>
-                                <option value="Non-Vegetarian">Non-Vegetarian</option>
-                                <option value="Eggetarian">Eggetarian</option>
-                                <option value="Vegan">Vegan</option>
-                              </select>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Smoking</label>
-                              <select
-                                value={regForm.smoking}
-                                onChange={(e) => setRegForm({ ...regForm, smoking: e.target.value })}
-                                className="w-full border border-slate-200 rounded-[12px] p-3 text-sm outline-none transition-all shadow-sm cursor-pointer"
-                                style={{ backgroundColor: '#F7F3EE', color: '#1A1A1A' }}
-                              >
-                                <option value="No">No</option>
-                                <option value="Occasionally">Occasionally</option>
-                                <option value="Regularly">Regularly</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium mb-1.5" style={{ color: '#1A1A1A' }}>Alcohol</label>
-                              <select
-                                value={regForm.alcohol}
-                                onChange={(e) => setRegForm({ ...regForm, alcohol: e.target.value })}
-                                className="w-full border border-slate-200 rounded-[12px] p-3 text-sm outline-none transition-all shadow-sm cursor-pointer"
-                                style={{ backgroundColor: '#F7F3EE', color: '#1A1A1A' }}
-                              >
-                                <option value="No">No</option>
-                                <option value="Socially">Socially</option>
-                                <option value="Regularly">Regularly</option>
-                              </select>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {/* STEP 5 */}
-                      {regStep === 5 && (
-                        <motion.div
-                          key="step5"
                           custom={stepDirection}
                           variants={slideStepVariants}
                           initial="enter"
@@ -1031,10 +981,10 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                         </motion.div>
                       )}
 
-                      {/* STEP 6 */}
-                      {regStep === 6 && (
+                      {/* STEP 5 */}
+                      {regStep === 5 && (
                         <motion.div
-                          key="step6"
+                          key="step5"
                           custom={stepDirection}
                           variants={slideStepVariants}
                           initial="enter"
@@ -1108,13 +1058,14 @@ export const LoginRegisterModule: React.FC<LoginRegisterModuleProps> = ({ onSucc
                       </motion.button>
                     ) : <div />}
 
-                    {regStep < 6 ? (
+                    {regStep < 5 ? (
                       <motion.button
                         type="button"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
+                        disabled={regStep === 1 && !isStep1Valid()}
                         onClick={() => changeRegStep(regStep + 1)}
-                        className="px-6 py-2.5 rounded-[12px] text-xs font-semibold text-white transition-all flex items-center gap-1.5 shadow-sm shadow-emerald-500/10 cursor-pointer"
+                        className="px-6 py-2.5 rounded-[12px] text-xs font-semibold text-white transition-all flex items-center gap-1.5 shadow-sm shadow-emerald-500/10 disabled:opacity-50 cursor-pointer"
                         style={{ backgroundColor: '#2D5A3D' }}
                       >
                         Continue <ArrowRight className="w-3.5 h-3.5" />
