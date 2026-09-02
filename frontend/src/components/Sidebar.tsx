@@ -31,7 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="material-symbols-outlined text-[24px]">eco</span>
         </div>
         <div>
-          <h1 className="font-bold text-[20px] leading-tight text-[#144227] tracking-tight">AyurLife Care</h1>
+          <h1 className="font-bold text-[20px] leading-tight text-[#144227] tracking-tight">AyurLife</h1>
           <p className="text-[13px] text-[#414942] font-medium tracking-wide">Harmonious Vitality</p>
         </div>
       </div>

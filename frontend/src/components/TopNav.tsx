@@ -7,6 +7,7 @@ interface TopNavProps {
   searchQuery?: string;
   onSearchChange?: (val: string) => void;
   userProfile: UserProfile;
+  onLogout?: () => void;
 }
 
 export const TopNav: React.FC<TopNavProps> = ({
@@ -15,8 +16,10 @@ export const TopNav: React.FC<TopNavProps> = ({
   searchQuery = '',
   onSearchChange,
   userProfile,
+  onLogout,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState([
     {
       id: 'notif-1',
@@ -43,8 +46,9 @@ export const TopNav: React.FC<TopNavProps> = ({
 
   const navLinks: { screen: ScreenType; label: string }[] = [
   { screen: 'home', label: 'Dashboard' },
-  { screen: 'records', label: 'Health Records' },
-  { screen: 'wellness', label: 'Wellness Hub' },
+  { screen: 'records', label: 'Consultations' },
+  { screen: 'schemes', label: 'Schemes' },
+  //{ screen: 'wellness', label: 'Wellness Hub' },
 ];
 
   const markAllRead = () => {
@@ -62,7 +66,7 @@ export const TopNav: React.FC<TopNavProps> = ({
           onClick={() => onNavigate('home')}
           className="font-bold text-[22px] tracking-tight text-[#144227] hover:opacity-90 transition-opacity flex items-center gap-2"
         >
-          <span>MediKiosk+</span>
+          <span></span>
           {userProfile.kioskMode && (
             <span className="text-[11px] font-bold uppercase tracking-wider bg-[#2d5a3d] text-[#9ed0ab] px-2 py-0.5 rounded-full">
               Kiosk Active
@@ -184,19 +188,88 @@ export const TopNav: React.FC<TopNavProps> = ({
           )}
         </div>
 
-        {/* Profile Avatar Button */}
-        <button
-          type="button"
-          aria-label="Account Settings"
-          onClick={() => onNavigate('settings')}
-          className="p-1 rounded-full hover:ring-2 hover:ring-[#144227]/30 transition-all flex items-center"
-        >
-          <img
-            src={userProfile.avatarUrl}
-            alt={userProfile.firstName}
-            className="w-8 h-8 rounded-full object-cover border border-[#c1c9c0]"
-          />
-        </button>
+        {/* Profile Avatar Button with Dropdown */}
+        <div className="relative">
+          <button
+            type="button"
+            aria-label="Account Settings"
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="p-1 rounded-full hover:ring-2 hover:ring-[#144227]/30 transition-all flex items-center"
+          >
+            <img
+              src={userProfile.avatarUrl}
+              alt={userProfile.firstName}
+              className="w-8 h-8 rounded-full object-cover border border-[#c1c9c0]"
+            />
+          </button>
+
+          {showProfileMenu && (
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#c1c9c0]/30 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              {/* Profile Header */}
+              <div className="px-4 py-3 border-b border-[#f1ede8]">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={userProfile.avatarUrl}
+                    alt={userProfile.firstName}
+                    className="w-12 h-12 rounded-full object-cover border border-[#c1c9c0]"
+                  />
+                  <div>
+                    <p className="font-bold text-[14px] text-[#1c1c19]">
+                      {userProfile.firstName} {userProfile.lastName}
+                    </p>
+                    <p className="text-[12px] text-[#717971]">
+                      {userProfile.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Menu Items */}
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigate('settings');
+                  setShowProfileMenu(false);
+                }}
+                className="w-full text-left px-4 py-2.5 hover:bg-[#f7f3ee] transition-colors flex items-center gap-3 text-[14px] text-[#414942]"
+              >
+                <span className="material-symbols-outlined text-[18px]">person</span>
+                View Profile
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigate('settings');
+                  setShowProfileMenu(false);
+                }}
+                className="w-full text-left px-4 py-2.5 hover:bg-[#f7f3ee] transition-colors flex items-center gap-3 text-[14px] text-[#414942]"
+              >
+                <span className="material-symbols-outlined text-[18px]">settings</span>
+                Settings
+              </button>
+
+              <div className="border-t border-[#f1ede8] my-1" />
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (onLogout) {
+                    const confirmed = window.confirm('Are you sure you want to log out?');
+                    if (confirmed) {
+                      onLogout();
+                      setShowProfileMenu(false);
+                    }
+                  }
+                }}
+                className="w-full text-left px-4 py-2.5 hover:bg-[#a13f1f]/10 transition-colors flex items-center gap-3 text-[14px] text-[#a13f1f] font-semibold"
+              >
+                <span className="material-symbols-outlined text-[18px]">logout</span>
+                Log Out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

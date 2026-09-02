@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { HealthRecordItem, VaultCategory } from '../types';
+import { MedicalRecordItem, VaultCategory } from '../types';
 
 interface ABHAVaultViewProps {
   onLinkNewRecord: () => void;
-  onViewRecord: (record: HealthRecordItem) => void;
-  onNavigateToCategory: (category: string) => void;
-  records: HealthRecordItem[];
+  onViewRecord: (record: MedicalRecordItem) => void;
+  records: MedicalRecordItem[];
 }
 
 export const ABHAVaultView: React.FC<ABHAVaultViewProps> = ({
   onLinkNewRecord,
   onViewRecord,
-  onNavigateToCategory,
   records,
 }) => {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -148,11 +146,9 @@ export const ABHAVaultView: React.FC<ABHAVaultViewProps> = ({
       {/* 3 Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {categories.map((cat) => (
-          <button
+          <div
             key={cat.id}
-            type="button"
-            onClick={() => onNavigateToCategory(cat.id)}
-            className="bg-white rounded-2xl p-6 shadow-[0px_4px_20px_rgba(45,90,61,0.04)] hover:shadow-[0px_10px_25px_rgba(45,90,61,0.08)] border border-[#c1c9c0]/30 flex items-center justify-between text-left transition-all duration-200 group hover:-translate-y-0.5"
+            className="bg-white rounded-2xl p-6 shadow-[0px_4px_20px_rgba(45,90,61,0.04)] border border-[#c1c9c0]/30 flex items-center justify-between text-left transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
               <div
@@ -170,7 +166,7 @@ export const ABHAVaultView: React.FC<ABHAVaultViewProps> = ({
             <span className="material-symbols-outlined text-[#717971] group-hover:text-[#144227] group-hover:translate-x-1 transition-all">
               chevron_right
             </span>
-          </button>
+          </div>
         ))}
       </div>
 

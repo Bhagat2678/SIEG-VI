@@ -7,12 +7,7 @@ interface LinkRecordModalProps {
 }
 
 export const LinkRecordModal: React.FC<LinkRecordModalProps> = ({ onClose, onAddRecord }) => {
-  const [method, setMethod] = useState<'abha' | 'upload'>('abha');
-  const [abhaNumber, setAbhaNumber] = useState('91-4589-2234-8890');
-  const [docCategory, setDocCategory] = useState<'prescription' | 'lab' | 'report'>('lab');
   const [docTitle, setDocTitle] = useState('Lipid Profile & Liver Function');
-  const [facility, setFacility] = useState('City General Hospital');
-  const [doctor, setDoctor] = useState('Dr. Sarah Jenkins');
   const [isLinking, setIsLinking] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -24,23 +19,18 @@ export const LinkRecordModal: React.FC<LinkRecordModalProps> = ({ onClose, onAdd
       setIsLinking(false);
       const newRec: HealthRecordItem = {
         id: `rec-${Date.now()}`,
-        category: docCategory,
-        categoryLabel:
-          docCategory === 'lab'
-            ? 'Lab Result'
-            : docCategory === 'prescription'
-            ? 'Prescription'
-            : 'Clinical Report',
+        category: 'lab',
+        categoryLabel: 'Lab Result',
         title: docTitle,
         date: 'Today',
-        doctor,
-        facility,
+        doctor: 'Dr. Sarah Jenkins',
+        facility: 'City General Hospital',
         statusType: 'normal',
         statusLabel: 'Normal',
-        borderAccentColor: docCategory === 'prescription' ? 'bg-[#a13f1f]' : 'bg-[#144227]',
+        borderAccentColor: 'bg-[#144227]',
         badgeBgColor: 'bg-[#f7f3ee]',
         badgeTextColor: 'text-[#414942]',
-        iconName: docCategory === 'lab' ? 'science' : docCategory === 'prescription' ? 'prescriptions' : 'description',
+        iconName: 'science',
         fileSize: '1.4 MB',
         summaryText: 'Verified and cryptographically signed via National Health Authority ABDM gateway.',
       };
@@ -82,52 +72,15 @@ export const LinkRecordModal: React.FC<LinkRecordModalProps> = ({ onClose, onAdd
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Method Tabs */}
-            <div className="grid grid-cols-2 gap-2 bg-[#f1ede8] p-1 rounded-xl">
-              <button
-                type="button"
-                onClick={() => setMethod('abha')}
-                className={`py-2 text-[13px] font-bold rounded-lg transition-all ${
-                  method === 'abha' ? 'bg-white text-[#144227] shadow-xs' : 'text-[#717971]'
-                }`}
-              >
-                Via ABHA Network
-              </button>
-              <button
-                type="button"
-                onClick={() => setMethod('upload')}
-                className={`py-2 text-[13px] font-bold rounded-lg transition-all ${
-                  method === 'upload' ? 'bg-white text-[#144227] shadow-xs' : 'text-[#717971]'
-                }`}
-              >
-                Scan / Upload Doc
-              </button>
+            <div className="border-2 border-dashed border-[#c1c9c0] p-4 rounded-xl text-center bg-[#fdf9f4]">
+              <span className="material-symbols-outlined text-[32px] text-[#144227]">
+                cloud_upload
+              </span>
+              <p className="text-[13px] font-bold text-[#1c1c19] mt-1">
+                Drag & Drop PDF or Photos
+              </p>
+              <p className="text-[11px] text-[#717971]">Supports scanned lab tests and prescriptions</p>
             </div>
-
-            {method === 'abha' ? (
-              <div>
-                <label className="block text-[12px] font-bold text-[#414942] uppercase mb-1">
-                  ABHA Health Address
-                </label>
-                <input
-                  type="text"
-                  value={abhaNumber}
-                  onChange={(e) => setAbhaNumber(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#f1ede8] text-[#1c1c19] text-[14px] border border-[#c1c9c0]/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#144227]"
-                  required
-                />
-              </div>
-            ) : (
-              <div className="border-2 border-dashed border-[#c1c9c0] p-4 rounded-xl text-center bg-[#fdf9f4]">
-                <span className="material-symbols-outlined text-[32px] text-[#144227]">
-                  cloud_upload
-                </span>
-                <p className="text-[13px] font-bold text-[#1c1c19] mt-1">
-                  Drag & Drop PDF or Photos
-                </p>
-                <p className="text-[11px] text-[#717971]">Supports scanned lab tests and prescriptions</p>
-              </div>
-            )}
 
             <div>
               <label className="block text-[12px] font-bold text-[#414942] uppercase mb-1">
@@ -140,35 +93,6 @@ export const LinkRecordModal: React.FC<LinkRecordModalProps> = ({ onClose, onAdd
                 className="w-full px-4 py-2.5 rounded-xl bg-[#f1ede8] text-[#1c1c19] text-[14px] border border-[#c1c9c0]/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#144227]"
                 required
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[12px] font-bold text-[#414942] uppercase mb-1">
-                  Category
-                </label>
-                <select
-                  value={docCategory}
-                  onChange={(e) => setDocCategory(e.target.value as any)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-[#f1ede8] text-[#1c1c19] text-[13px] border border-[#c1c9c0]/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#144227]"
-                >
-                  <option value="lab">Lab Result</option>
-                  <option value="prescription">Prescription</option>
-                  <option value="report">Clinical Report</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[12px] font-bold text-[#414942] uppercase mb-1">
-                  Facility
-                </label>
-                <input
-                  type="text"
-                  value={facility}
-                  onChange={(e) => setFacility(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-[#f1ede8] text-[#1c1c19] text-[13px] border border-[#c1c9c0]/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#144227]"
-                />
-              </div>
             </div>
 
             <div className="pt-4 flex justify-end gap-3 border-t border-[#f1ede8]">
