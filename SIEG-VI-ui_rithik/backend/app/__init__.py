@@ -1,1 +1,0 @@
-# MediKiosk+ Backend Application Package

@@ -1,6 +1,0 @@
-{
-  "name": "MediKiosk+ AyurLife Care",
-  "description": "Smart Ayurvedic health kiosk and wellness platform featuring ABHA Vault, interactive Prakriti quiz, AyurAI consultation chat, health records manager, and wellness hub.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
