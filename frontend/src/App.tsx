@@ -19,8 +19,10 @@ import { VoiceMicFAB } from './components/VoiceMicFAB';
 import { VaultVerifyModal } from './components/VaultVerifyModal';
 import { LiveSchemesNewsView } from './components/LiveSchemesNewsView';
 import { RegistrationView } from './components/RegistrationView';
+import LoginRegisterModule from './components/LoginRegisterModule';
 
 export const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
   const [records, setRecords] = useState<MedicalRecordItem[]>(MEDICAL_RECORDS_DATA);
   const [userProfile, setUserProfile] = useState<UserProfile>(INITIAL_USER_PROFILE);
@@ -89,10 +91,30 @@ export const App: React.FC = () => {
   const handleLogout = () => {
     setUserProfile(INITIAL_USER_PROFILE);
     setRecords(MEDICAL_RECORDS_DATA);
-    setCurrentScreen('registration');
+    setCurrentScreen('home');
     setVaultVerified(false);
     setSearchQuery('');
+    setIsLoggedIn(false);
   };
+
+  const handleLoginSuccess = (userData: any) => {
+    if (userData && userData.name) {
+      setUserProfile({
+        ...INITIAL_USER_PROFILE,
+        name: userData.name,
+        email: userData.email || INITIAL_USER_PROFILE.email,
+      });
+    }
+    setIsLoggedIn(true);
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-[#fdf9f4]">
+        <LoginRegisterModule onSuccess={handleLoginSuccess} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#fdf9f4] text-[#1c1c19] flex flex-col font-sans">
